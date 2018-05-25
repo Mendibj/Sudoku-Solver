@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Sudoku {
-	private final static int ROWS = 9;
-	private final static int COLUMNS = 9;
-	private int board[][] = new int[ROWS][COLUMNS];
+	private final static int EMPTY = 0;
+	private final static int N = 9;
+	private int board[][] = new int[N][N];
 
 	// CONSTRUCTOR CON NOMBRE DE FICHERO
 	public Sudoku(String fileName) {
@@ -30,22 +30,15 @@ public class Sudoku {
 
 	private boolean solveAux(int row, int column) {
 		//Caso base, hemos obtenido todas las soluciones
-		if(column == 9) return true;
+		if(column > N-1 ) return true;
 		
-		int nextColumn;
-		int nextRow;
-		if (row < 8) {
-			nextRow = row + 1;
-			nextColumn = column;
-		} else {
-			nextRow = 0;
-			nextColumn = column + 1;
-
-		}
+		// se calcula la siguiente fila y columna
+		int nextColumn = column + row/(N-1);
+		int nextRow = (int) (row % (N-1) + Math.pow(0, row/(N-1)));
 
 		// si es un número ya generado hacemos la llamada recursiva del
 		// siguiente
-		if (getNumber(row, column) != 0)
+		if (getNumber(row, column) != EMPTY)
 			return solveAux(nextRow, nextColumn);
 
 		// si es una casilla vacía obtenemos una lista de combinaciones,
@@ -78,7 +71,7 @@ public class Sudoku {
 
 	// COMPRUEBA SI SE CUMPLEN LAS RESTRICCIONES EN UNA FILA
 	private boolean checkRow(int row, int num) {
-		for (int i = 0; i < COLUMNS; i++) {
+		for (int i = 0; i < N; i++) {
 			if (getNumber(row, i) == num)
 				return false;
 		}
@@ -87,7 +80,7 @@ public class Sudoku {
 
 	// COMPRUEBA SI SE CUMPLEN LAS RESTRICCIONES EN UNA COLUMNA
 	private boolean checkColumn(int column, int num) {
-		for (int i = 0; i < COLUMNS; i++) {
+		for (int i = 0; i < N; i++) {
 			if (getNumber(i, column) == num)
 				return false;
 		}
@@ -97,7 +90,7 @@ public class Sudoku {
 	// DEVUELVE UNA LISTA CON LOS POSIBLES NÚMEROS CADA UNA DETERMINADA CASILLA
 	private List<Integer> posibilities(int row, int column) {
 		List<Integer> list = new ArrayList<>();
-		for (int i = 1; i <= 9; i++) {
+		for (int i = 1; i <= N; i++) {
 			if (checkSquare(row, column, i) && checkRow(row, i)
 					&& checkColumn(column, i))
 				list.add(i);
@@ -108,10 +101,10 @@ public class Sudoku {
 	// DADO UN NOMBRE DE FICHERO DEVUELVE UNA MATRIZ
 	private static int[][] fileToBoard(String fileName)
 			throws FileNotFoundException {
-		int board[][] = new int[ROWS][COLUMNS];
+		int board[][] = new int[N][N];
 		Scanner scanner = new Scanner(new File(fileName));
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLUMNS; j++) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
 				int num = Integer.parseInt(scanner.next());
 				board[i][j] = num;
 			}
@@ -123,10 +116,10 @@ public class Sudoku {
 	// IMPRIMIR EL TABLERO
 	public String toString() {
 		String res = "";
-		for (int i = 0; i < ROWS; i++) {
+		for (int i = 0; i < N; i++) {
 			if (i != 0)
 				res += "\n";
-			for (int j = 0; j < COLUMNS; j++) {
+			for (int j = 0; j < N; j++) {
 				res += board[i][j] + " ";
 			}
 		}
